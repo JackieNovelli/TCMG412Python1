@@ -101,3 +101,66 @@ pattern = r'(.*?) - (.*) \[(.*?)\] \"(.*?) (.*?)\"? (.+?) (.+) (.+)'
 
 # List per line of file
 lines = open(data_text, 'r').readlines()
+
+# Iterate over the lines
+for line in lines:
+    # Match pattern to the line
+    match = re.match(pattern, line)
+
+    # If no match, skip this loop
+    if not match:
+        continue
+
+    match.group(0) # The original line
+    match.group(3) # The timestamp
+    timestamp = match.group(3)
+    month = timestamp[3:6]
+    months_count[month] += 1
+    match.group(7) # Status codes
+    
+    if (match.group(7)[0] == "3"):
+        redirectCounter += 1
+    elif (match.group(7)[0] == "4"):
+        errorCounter += 1
+    if (month == "Jan"): 
+        janlogs.write(line)
+    elif (month == "Feb"): 
+        feblogs.write(line)
+    elif (month == "Mar"): 
+        marlogs.write(line)
+    elif (month == "Apr"): 
+        aprlogs.write(line)
+    elif (month == "May"): 
+        maylogs.write(line)
+    elif (month == "Jun"): 
+        junlogs.write(line)
+    elif (month == "Jul"): 
+        jullogs.write(line)
+    elif (month == "Aug"): 
+        auglogs.write(line)
+    elif (month == "Sep"): 
+        seplogs.write(line)
+    elif (month == "Oct"): 
+        octlogs.write(line)
+    elif (month == "Nov"): 
+        novlogs.write(line)
+    elif (month == "Dec"): 
+        declogs.write(line)
+    
+    else:
+        continue
+
+# ANSWER STUFF
+print("~Request Complete!~")
+print("Logs since January 1995: " + str(year_count))
+print("Total Logs: " + str(total))
+tResponses = file_len(data_text)
+print("Average number for month:", round(tResponses/12,2))
+print("Average number for week: ",round(tResponses/52,2))
+print("Average number for day: ", round(tResponses/365,2))
+print("Month Count:", months_count)
+print("Total number of redirects:",redirectCounter)
+print("Percentage of all requests that were redirects (3xx): {0:.2%}".format(redirectCounter/tResponses))
+print("Total number of Errors:",errorCounter)
+print("Percentage of client error (4xx) requests: {0:.2%}".format(errorCounter/tResponses))	
+fileCount()
