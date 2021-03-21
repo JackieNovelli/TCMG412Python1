@@ -1,6 +1,6 @@
 # TCMG412Python1
 
-## Python Project 1
+## Python Project 3
 The goal of this project is to familiarize yourself with Python syntax, and some basic tasks that are common in systems 
 programming and administration. The program will be invoked from the command line on a fresh Linux machine, so if you 
 introduce any library dependencies beyond the Python Standard Library (not recommended), you must provide very clear 
@@ -14,7 +14,7 @@ retail stores. The marketing department wants to try a new promotional campaign 
 better data about current traffic to your website. Your boss has asked you to take the HTTP server logs from the webserver
 and provide some analytics to Marketing.
 
-## Python Project 2
+## Python Project 4
 
 Marketing was very happy with the data you provided them. Now they want more. They have asked that you answer more questions
 so they have a better idea about the nature of the visitors that are coming to the company website.
@@ -36,7 +36,7 @@ and consistent manner.
 Your program should be created and developed using GitHub (I will be examining the commit logs to see your work). When the
 project is due, submit your repository URL so I can clone the repo and test your program.
 
-## Python Project 3
+## Python Project Docker
 
 The goal of this project will be to build a simple REST API in Python and containerize it using Docker. This container image
 will then be uploaded to the Docker public repository and I will be downloading this image to run it in my local Docker 
