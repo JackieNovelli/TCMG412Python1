@@ -46,13 +46,13 @@ def is_prime(integer):
     integer = int(integer)
     if integer==1:
 #       return jsonify({"Boolean_Value": "False"})
-        return(
+        return jsonify(
             input=integer
             output="False"
         )
     elif (integer==2):
 #       return jsonify({"Boolean_Value": "True"})
-        return(
+        return jsonify(
             input=integer
             output="True"
         )
@@ -60,12 +60,12 @@ def is_prime(integer):
         for x in range(2,integer):
             if (integer % x==0):
 #               return jsonify({"Boolean_Value": "False"})
-                return(
+                return jsonify(
                     input=integer
                     output="False"
                 )
 #   return jsonify({"Boolean_Value": "True"})
-    return(
+    return jsonify(
         input=integer
         output="True"
     )
