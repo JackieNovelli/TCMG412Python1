@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Response
 import os 
 import socket 
 import hashlib 
@@ -10,8 +10,8 @@ app = Flask(__name__)
 @app.route('/md5/<string>') 
 def md5(string):
     hash_obj = hashlib.md5(string.encode('utf-8')) 
-#   response = jsonify("MD5_String"=hash_obj.hexdigest())
-#   return response
+#   Response = jsonify("MD5_String"=hash_obj.hexdigest())
+#   return Response
     return jsonify(
         input=string,
         output=hash_obj.hexdigest()
@@ -20,55 +20,69 @@ def md5(string):
 @app.route('/factorial/<integer>') 
 def factorial(integer):	
 #   return jsonify("Factorial_Num"=math.factorial(int(integer)))
-    return jsonify(
-        input=integer,
-        output=math.factorial(int(integer))
-    )
+    try:
+        return jsonify(
+            input=integer,
+            output=math.factorial(int(integer))
+        )
+    except:
+        return Response(status=400)
 
 
 @app.route('/fibonacci/<integer>')
 def fibonacci(integer):
-    n = int(integer)
-    Fib_list = [0,1]
-    num = Fib_list[-1]
-    while num < n:
-        num = Fib_list[-2]+Fib_list[-1]
-        if num < n:
-            Fib_list.append(num)
-#   return jsonify("Fib_List"=Fib_list)
-    return jsonify(
-        input=integer,
-        output=Fib_list
-    )
+    try:
+        n = int(integer)
+        if int(integer) < 0:
+            return Response(status=400)
+        if int(integer) == 0:
+            Fib_list = [0]
+        else:
+            Fib_list = [0,1,1]
+            num = Fib_list[-1]
+            while num < n:
+                num = Fib_list[-2]+Fib_list[-1]
+                if num <= n:
+                    Fib_list.append(num)
+    #   return jsonify("Fib_List"=Fib_list)
+        return jsonify(
+            input=integer,
+            output=Fib_list
+        )
+    except:
+        return Response(status=400)
 
 @app.route('/is-prime/<integer>')
 def is_prime(integer):
-    integer = int(integer)
-    if integer==1:
-#       return jsonify("Boolean_Value"="False")
+    try:
+        integer = int(integer)
+        if integer==1:
+    #       return jsonify("Boolean_Value"="False")
+            return jsonify(
+                input=integer,
+                output=False
+            )
+        elif (integer==2):
+    #       return jsonify("Boolean_Value"="True")
+            return jsonify(
+                input=integer,
+                output=True
+            )
+        else:
+            for x in range(2,integer):
+                if (integer % x==0):
+    #               return jsonify("Boolean_Value"="False")
+                    return jsonify(
+                        input=integer,
+                        output=False
+                    )
+    #   return jsonify("Boolean_Value"="True")
         return jsonify(
             input=integer,
-            output='False'
+            output=True
         )
-    elif (integer==2):
-#       return jsonify("Boolean_Value"="True")
-        return jsonify(
-            input=integer,
-            output='True'
-        )
-    else:
-        for x in range(2,integer):
-            if (integer % x==0):
-#               return jsonify("Boolean_Value"="False")
-                return jsonify(
-                    input=integer,
-                    output='False'
-                )
-#   return jsonify("Boolean_Value"="True")
-    return jsonify(
-        input=integer,
-        output='True'
-    )
+    except:
+        return Response(status=400)
 
 @app.route('/slack-alert/<string>')
 def slack_alert(string):
@@ -79,13 +93,13 @@ def slack_alert(string):
 #       return jsonify("Boolean_Value"="True")
         return jsonify(
             input=string,
-            output='True'
+            output=True
         )
     else:
 #       return jsonify("Boolean_Value"="False")
         return jsonify(
             input=string,
-            output='False'
+            output=False
         )
 		
 if __name__ == "__main__":
