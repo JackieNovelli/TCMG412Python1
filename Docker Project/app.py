@@ -1,12 +1,14 @@
-from flask import Flask, jsonify, Response
+from flask import Flask, jsonify, Response, request
 import os 
 import socket 
-import hashlib 
+import hashlib
 import math
 import requests
+import redis
  
 app = Flask(__name__) 
- 
+
+
 @app.route('/md5/<string>') 
 def md5(string):
     hash_obj = hashlib.md5(string.encode('utf-8')) 
@@ -101,6 +103,25 @@ def slack_alert(string):
             input=string,
             output=False
         )
+
+@app.route('/keyval', methods=['POST', 'PUT'])
+def POST_PUT():
+    redserv = redis.Redis(host="redis-server", port=6379)
+    if request.method == 'POST':
+        redserv.set(request.form['key'], request.form['value'])
+    if request.method == 'PUT':
+        redserv.set(request.form['key'], request.form['value'])
+
+@app.route('/keyval/<string>', methods=['GET', 'DELETE'])
+def GET_DELETE(string):
+    red = redis.Redis(host="redis-server", port=6379, db=0)
+    if request.method == 'GET':
+        red.get(string)
+        return 
+    if request.method == 'DELETE':
+        red.delete(string)
+        return
+
 		
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=5000)
