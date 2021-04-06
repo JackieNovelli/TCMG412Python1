@@ -116,8 +116,24 @@ def POST_PUT():
 def GET_DELETE(string):
     red = redis.Redis(host="redis-server", port=6379, db=0)
     if request.method == 'GET':
-        red.get(string)
-        return 
+        keyval = red.get(string)
+        if keyval == None:
+            return jsonify(
+                key=string,
+                value=str(keyval),
+                command= str(f'GET {string}'),
+                result= False,
+                error='key not found'
+            ), 404
+        else:
+            return jsonify(
+                key=string,
+                value=str(keyval),
+                command= str(f'GET {string}'),
+                result= True,
+                error=''
+            )
+
     if request.method == 'DELETE':
         red.delete(string)
         return
