@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+   flaskapp:
+     build: ./Application
+     hostname: flask-host
+     depends_on:
+       - redis
+     networks:
+       - redisnet
+   redis:
+     image: redis
+     hostname: redis-server
+     networks:
+       - redisnet
+
+networks:
+    redisnet:

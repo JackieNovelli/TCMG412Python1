@@ -128,18 +128,27 @@ def POST_PUT():
                 result= True,
                 error=''
                 ), 200
-    if request.method == 'PUT'
+    if request.method == 'PUT':
         data = request.get_json()
         key = data['key']
         keyvalue = data['value']
-        red.set(key, keyvalue)
-        return jsonify(
-            key=key,
-            value=keyvalue,
-            command= str(f'Post {key}/{keyvalue}'),
-            result= True,
-            error=''
-            ), 200
+        if red.get(key):
+            red.set(key, keyvalue)
+            return jsonify(
+                key=key,
+                value=keyvalue,
+                command= str(f'PUT {key}/{keyvalue}'),
+                result= True,
+                error=''
+                ), 200
+        else:
+            return jsonify(
+                key=key,
+                value=keyvalue,
+                command= str(f'PUT {key}/{keyvalue}'),
+                result= False,
+                error='Key does not exist'
+                ), 404
 
 
 @app.route('/keyval/<string>', methods=['GET', 'DELETE'])
@@ -150,7 +159,7 @@ def GET_DELETE(string):
         if keyval == None:
             return jsonify(
                 key=string,
-                value=str(keyval, 'utf-8'),
+                value=str(keyval),
                 command= str(f'GET {string}'),
                 result= False,
                 error='key not found'
