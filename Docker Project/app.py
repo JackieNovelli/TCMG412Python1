@@ -106,16 +106,65 @@ def slack_alert(string):
 
 @app.route('/keyval', methods=['POST', 'PUT'])
 def POST_PUT():
-    redserv = redis.Redis(host="redis-server", port=6379)
+    red = redis.Redis(host="redis-server", port=6379)
     if request.method == 'POST':
-        redserv.set(request.form['key'], request.form['value'])
-    if request.method == 'PUT':
-        redserv.set(request.form['key'], request.form['value'])
+        data = request.get_json()
+        key = data['key']
+        keyvalue = data['value']
+        if red.get(key):
+            return jsonify(
+                key=key,
+                value=keyvalue,
+                command= str(f'POST {key}/{keyvalue}'),
+                result= False,
+                error='Unable to add pair: key already exists.'
+            ), 409
+        else:
+            red.set(key, keyvalue)
+            return jsonify(
+                key=key,
+                value=keyvalue,
+                command= str(f'POST {key}/{keyvalue}'),
+                result= True,
+                error=''
+                ), 200
+    if request.method == 'PUT'
+        data = request.get_json()
+        key = data['key']
+        keyvalue = data['value']
+        red.set(key, keyvalue)
+        return jsonify(
+            key=key,
+            value=keyvalue,
+            command= str(f'Post {key}/{keyvalue}'),
+            result= True,
+            error=''
+            ), 200
+
 
 @app.route('/keyval/<string>', methods=['GET', 'DELETE'])
 def GET_DELETE(string):
     red = redis.Redis(host="redis-server", port=6379, db=0)
     if request.method == 'GET':
+        keyval = red.get(string)
+        if keyval == None:
+            return jsonify(
+                key=string,
+                value=str(keyval, 'utf-8'),
+                command= str(f'GET {string}'),
+                result= False,
+                error='key not found'
+            ), 404
+        else:
+            return jsonify(
+                key=string,
+                value=str(keyval, 'utf-8'),
+                command= str(f'GET {string}'),
+                result= True,
+                error=''
+            )
+
+    if request.method == 'DELETE':
         keyval = red.get(string)
         if keyval == None:
             return jsonify(
@@ -126,17 +175,14 @@ def GET_DELETE(string):
                 error='key not found'
             ), 404
         else:
+            red.delete(string)
             return jsonify(
                 key=string,
-                value=str(keyval),
-                command= str(f'GET {string}'),
+                value=str(keyval, 'utf-8'),
+                command= str(f'DELETE {string}'),
                 result= True,
                 error=''
             )
-
-    if request.method == 'DELETE':
-        red.delete(string)
-        return
 
 		
 if __name__ == "__main__":
